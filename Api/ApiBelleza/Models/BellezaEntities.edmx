@@ -1,0 +1,706 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="SalaBellezaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Clientes">
+          <Key>
+            <PropertyRef Name="ClienteID" />
+          </Key>
+          <Property Name="ClienteID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Identificacion" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Colores">
+          <Key>
+            <PropertyRef Name="ColorID" />
+          </Key>
+          <Property Name="ColorID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Color" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <!--Errores durante la generación:
+advertencia 6002: La tabla o vista 'SalaBelleza.dbo.DetalleFactura' no tiene definida ninguna clave principal. Se ha inferido la clave y la definición se creado como una vista o tabla de solo lectura.-->
+        <EntityType Name="DetalleFactura">
+          <Key>
+            <PropertyRef Name="FacturaID" />
+            <PropertyRef Name="ProductoID" />
+            <PropertyRef Name="Cantidad" />
+          </Key>
+          <Property Name="FacturaID" Type="int" Nullable="false" />
+          <Property Name="ProductoID" Type="int" Nullable="false" />
+          <Property Name="Cantidad" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errores durante la generación:
+advertencia 6002: La tabla o vista 'SalaBelleza.dbo.DetallePlanSepareXProducto' no tiene definida ninguna clave principal. Se ha inferido la clave y la definición se creado como una vista o tabla de solo lectura.-->
+        <EntityType Name="DetallePlanSepareXProducto">
+          <Key>
+            <PropertyRef Name="PlanSepareID" />
+            <PropertyRef Name="ProductoXColorID" />
+            <PropertyRef Name="Cantidad" />
+          </Key>
+          <Property Name="PlanSepareID" Type="int" Nullable="false" />
+          <Property Name="ProductoXColorID" Type="int" Nullable="false" />
+          <Property Name="Cantidad" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Facturas">
+          <Key>
+            <PropertyRef Name="FacturaID" />
+          </Key>
+          <Property Name="FacturaID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ClienteID" Type="int" Nullable="false" />
+          <Property Name="Fecha" Type="datetime" Nullable="false" />
+          <Property Name="Total" Type="money" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PlanSepare">
+          <Key>
+            <PropertyRef Name="PlanSepareID" />
+          </Key>
+          <Property Name="PlanSepareID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ClienteID" Type="int" Nullable="false" />
+          <Property Name="FechaSepare" Type="datetime" Nullable="false" />
+          <Property Name="TotalPrecioSepare" Type="money" Nullable="false" />
+          <Property Name="ValorMinimo" Type="money" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Productos">
+          <Key>
+            <PropertyRef Name="ProductoID" />
+          </Key>
+          <Property Name="ProductoID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ProductoXColor">
+          <Key>
+            <PropertyRef Name="ProductoXColorID" />
+          </Key>
+          <Property Name="ProductoXColorID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductoID" Type="int" Nullable="false" />
+          <Property Name="ColorID" Type="int" Nullable="false" />
+          <Property Name="CantidadStock" Type="int" Nullable="false" />
+          <Property Name="PrecioUnidad" Type="money" Nullable="false" />
+          <Property Name="Referencia" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Promociones">
+          <Key>
+            <PropertyRef Name="PromocionID" />
+          </Key>
+          <Property Name="PromocionID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductoID" Type="int" Nullable="false" />
+          <Property Name="PorcentajeDescuento" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <Association Name="FK_DetalleFactura_Facturas">
+          <End Role="Facturas" Type="Self.Facturas" Multiplicity="1" />
+          <End Role="DetalleFactura" Type="Self.DetalleFactura" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Facturas">
+              <PropertyRef Name="FacturaID" />
+            </Principal>
+            <Dependent Role="DetalleFactura">
+              <PropertyRef Name="FacturaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DetalleFactura_Productos">
+          <End Role="Productos" Type="Self.Productos" Multiplicity="1" />
+          <End Role="DetalleFactura" Type="Self.DetalleFactura" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Productos">
+              <PropertyRef Name="ProductoID" />
+            </Principal>
+            <Dependent Role="DetalleFactura">
+              <PropertyRef Name="ProductoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DetallePlanSepareXProducto_PlanSepare">
+          <End Role="PlanSepare" Type="Self.PlanSepare" Multiplicity="1" />
+          <End Role="DetallePlanSepareXProducto" Type="Self.DetallePlanSepareXProducto" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PlanSepare">
+              <PropertyRef Name="PlanSepareID" />
+            </Principal>
+            <Dependent Role="DetallePlanSepareXProducto">
+              <PropertyRef Name="PlanSepareID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DetallePlanSepareXProducto_ProductoXColor">
+          <End Role="ProductoXColor" Type="Self.ProductoXColor" Multiplicity="1" />
+          <End Role="DetallePlanSepareXProducto" Type="Self.DetallePlanSepareXProducto" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductoXColor">
+              <PropertyRef Name="ProductoXColorID" />
+            </Principal>
+            <Dependent Role="DetallePlanSepareXProducto">
+              <PropertyRef Name="ProductoXColorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Facturas_Clientes">
+          <End Role="Clientes" Type="Self.Clientes" Multiplicity="1" />
+          <End Role="Facturas" Type="Self.Facturas" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clientes">
+              <PropertyRef Name="ClienteID" />
+            </Principal>
+            <Dependent Role="Facturas">
+              <PropertyRef Name="ClienteID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PlanSepare_Clientes">
+          <End Role="Clientes" Type="Self.Clientes" Multiplicity="1" />
+          <End Role="PlanSepare" Type="Self.PlanSepare" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clientes">
+              <PropertyRef Name="ClienteID" />
+            </Principal>
+            <Dependent Role="PlanSepare">
+              <PropertyRef Name="ClienteID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductoXColor_Colores">
+          <End Role="Colores" Type="Self.Colores" Multiplicity="1" />
+          <End Role="ProductoXColor" Type="Self.ProductoXColor" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Colores">
+              <PropertyRef Name="ColorID" />
+            </Principal>
+            <Dependent Role="ProductoXColor">
+              <PropertyRef Name="ColorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductoXColor_Productos">
+          <End Role="Productos" Type="Self.Productos" Multiplicity="1" />
+          <End Role="ProductoXColor" Type="Self.ProductoXColor" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Productos">
+              <PropertyRef Name="ProductoID" />
+            </Principal>
+            <Dependent Role="ProductoXColor">
+              <PropertyRef Name="ProductoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Promociones_Productos">
+          <End Role="Productos" Type="Self.Productos" Multiplicity="1" />
+          <End Role="Promociones" Type="Self.Promociones" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Productos">
+              <PropertyRef Name="ProductoID" />
+            </Principal>
+            <Dependent Role="Promociones">
+              <PropertyRef Name="ProductoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="InsertarCliente" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Nombre" Type="nvarchar" Mode="In" />
+          <Parameter Name="Cedula" Type="int" Mode="In" />
+        </Function>
+        <Function Name="SeleccionarPlanSepare" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Cedula" Type="int" Mode="In" />
+        </Function>
+        <EntityContainer Name="SalaBellezaModelStoreContainer">
+          <EntitySet Name="Clientes" EntityType="Self.Clientes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Colores" EntityType="Self.Colores" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Facturas" EntityType="Self.Facturas" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PlanSepare" EntityType="Self.PlanSepare" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Productos" EntityType="Self.Productos" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductoXColor" EntityType="Self.ProductoXColor" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Promociones" EntityType="Self.Promociones" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DetalleFactura" EntityType="Self.DetalleFactura" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [DetalleFactura].[FacturaID] AS [FacturaID], 
+    [DetalleFactura].[ProductoID] AS [ProductoID], 
+    [DetalleFactura].[Cantidad] AS [Cantidad]
+    FROM [dbo].[DetalleFactura] AS [DetalleFactura]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="DetallePlanSepareXProducto" EntityType="Self.DetallePlanSepareXProducto" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [DetallePlanSepareXProducto].[PlanSepareID] AS [PlanSepareID], 
+    [DetallePlanSepareXProducto].[ProductoXColorID] AS [ProductoXColorID], 
+    [DetallePlanSepareXProducto].[Cantidad] AS [Cantidad]
+    FROM [dbo].[DetallePlanSepareXProducto] AS [DetallePlanSepareXProducto]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_DetalleFactura_Facturas" Association="Self.FK_DetalleFactura_Facturas">
+            <End Role="Facturas" EntitySet="Facturas" />
+            <End Role="DetalleFactura" EntitySet="DetalleFactura" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DetalleFactura_Productos" Association="Self.FK_DetalleFactura_Productos">
+            <End Role="Productos" EntitySet="Productos" />
+            <End Role="DetalleFactura" EntitySet="DetalleFactura" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DetallePlanSepareXProducto_PlanSepare" Association="Self.FK_DetallePlanSepareXProducto_PlanSepare">
+            <End Role="PlanSepare" EntitySet="PlanSepare" />
+            <End Role="DetallePlanSepareXProducto" EntitySet="DetallePlanSepareXProducto" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DetallePlanSepareXProducto_ProductoXColor" Association="Self.FK_DetallePlanSepareXProducto_ProductoXColor">
+            <End Role="ProductoXColor" EntitySet="ProductoXColor" />
+            <End Role="DetallePlanSepareXProducto" EntitySet="DetallePlanSepareXProducto" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Facturas_Clientes" Association="Self.FK_Facturas_Clientes">
+            <End Role="Clientes" EntitySet="Clientes" />
+            <End Role="Facturas" EntitySet="Facturas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PlanSepare_Clientes" Association="Self.FK_PlanSepare_Clientes">
+            <End Role="Clientes" EntitySet="Clientes" />
+            <End Role="PlanSepare" EntitySet="PlanSepare" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductoXColor_Colores" Association="Self.FK_ProductoXColor_Colores">
+            <End Role="Colores" EntitySet="Colores" />
+            <End Role="ProductoXColor" EntitySet="ProductoXColor" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductoXColor_Productos" Association="Self.FK_ProductoXColor_Productos">
+            <End Role="Productos" EntitySet="Productos" />
+            <End Role="ProductoXColor" EntitySet="ProductoXColor" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Promociones_Productos" Association="Self.FK_Promociones_Productos">
+            <End Role="Productos" EntitySet="Productos" />
+            <End Role="Promociones" EntitySet="Promociones" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SalaBellezaModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="ClientesE">
+          <Key>
+            <PropertyRef Name="ClienteID" />
+          </Key>
+          <Property Name="ClienteID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Identificacion" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Facturas" Relationship="Self.FK_Facturas_Clientes" FromRole="Clientes" ToRole="Facturas" />
+          <NavigationProperty Name="PlanSepare" Relationship="Self.FK_PlanSepare_Clientes" FromRole="Clientes" ToRole="PlanSepare" />
+        </EntityType>
+        <EntityType Name="Colores">
+          <Key>
+            <PropertyRef Name="ColorID" />
+          </Key>
+          <Property Name="ColorID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Color" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="ProductoXColor" Relationship="Self.FK_ProductoXColor_Colores" FromRole="Colores" ToRole="ProductoXColor" />
+        </EntityType>
+        <EntityType Name="FacturasE">
+          <Key>
+            <PropertyRef Name="FacturaID" />
+          </Key>
+          <Property Name="FacturaID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ClienteID" Type="Int32" Nullable="false" />
+          <Property Name="Fecha" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Total" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <NavigationProperty Name="Clientes" Relationship="Self.FK_Facturas_Clientes" FromRole="Facturas" ToRole="Clientes" />
+          <NavigationProperty Name="DetalleFactura" Relationship="Self.FK_DetalleFactura_Facturas" FromRole="Facturas" ToRole="DetalleFactura" />
+        </EntityType>
+        <EntityType Name="PlanSepareE">
+          <Key>
+            <PropertyRef Name="PlanSepareID" />
+          </Key>
+          <Property Name="PlanSepareID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ClienteID" Type="Int32" Nullable="false" />
+          <Property Name="FechaSepare" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="TotalPrecioSepare" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="ValorMinimo" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <NavigationProperty Name="Clientes" Relationship="Self.FK_PlanSepare_Clientes" FromRole="PlanSepare" ToRole="Clientes" />
+          <NavigationProperty Name="DetallePlanSepareXProducto" Relationship="Self.FK_DetallePlanSepareXProducto_PlanSepare" FromRole="PlanSepare" ToRole="DetallePlanSepareXProducto" />
+        </EntityType>
+        <EntityType Name="ProductosE">
+          <Key>
+            <PropertyRef Name="ProductoID" />
+          </Key>
+          <Property Name="ProductoID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="DetalleFactura" Relationship="Self.FK_DetalleFactura_Productos" FromRole="Productos" ToRole="DetalleFactura" />
+          <NavigationProperty Name="ProductoXColor" Relationship="Self.FK_ProductoXColor_Productos" FromRole="Productos" ToRole="ProductoXColor" />
+          <NavigationProperty Name="Promociones" Relationship="Self.FK_Promociones_Productos" FromRole="Productos" ToRole="Promociones" />
+        </EntityType>
+        <EntityType Name="ProductoXColorE">
+          <Key>
+            <PropertyRef Name="ProductoXColorID" />
+          </Key>
+          <Property Name="ProductoXColorID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductoID" Type="Int32" Nullable="false" />
+          <Property Name="ColorID" Type="Int32" Nullable="false" />
+          <Property Name="CantidadStock" Type="Int32" Nullable="false" />
+          <Property Name="PrecioUnidad" Type="Decimal" Precision="19" Scale="4" Nullable="false" />
+          <Property Name="Referencia" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Colores" Relationship="Self.FK_ProductoXColor_Colores" FromRole="ProductoXColor" ToRole="Colores" />
+          <NavigationProperty Name="Productos" Relationship="Self.FK_ProductoXColor_Productos" FromRole="ProductoXColor" ToRole="Productos" />
+          <NavigationProperty Name="DetallePlanSepareXProducto" Relationship="Self.FK_DetallePlanSepareXProducto_ProductoXColor" FromRole="ProductoXColor" ToRole="DetallePlanSepareXProducto" />
+        </EntityType>
+        <EntityType Name="PromocionesE">
+          <Key>
+            <PropertyRef Name="PromocionID" />
+          </Key>
+          <Property Name="PromocionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductoID" Type="Int32" Nullable="false" />
+          <Property Name="PorcentajeDescuento" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Productos" Relationship="Self.FK_Promociones_Productos" FromRole="Promociones" ToRole="Productos" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="DetalleFacturaE">
+          <Key>
+            <PropertyRef Name="FacturaID" />
+            <PropertyRef Name="ProductoID" />
+            <PropertyRef Name="Cantidad" />
+          </Key>
+          <Property Name="FacturaID" Type="Int32" Nullable="false" />
+          <Property Name="ProductoID" Type="Int32" Nullable="false" />
+          <Property Name="Cantidad" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Facturas" Relationship="Self.FK_DetalleFactura_Facturas" FromRole="DetalleFactura" ToRole="Facturas" />
+          <NavigationProperty Name="Productos" Relationship="Self.FK_DetalleFactura_Productos" FromRole="DetalleFactura" ToRole="Productos" />
+        </EntityType>
+        <EntityType Name="DetallePlanSepareXProductoE">
+          <Key>
+            <PropertyRef Name="PlanSepareID" />
+            <PropertyRef Name="ProductoXColorID" />
+            <PropertyRef Name="Cantidad" />
+          </Key>
+          <Property Name="PlanSepareID" Type="Int32" Nullable="false" />
+          <Property Name="ProductoXColorID" Type="Int32" Nullable="false" />
+          <Property Name="Cantidad" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="PlanSepare" Relationship="Self.FK_DetallePlanSepareXProducto_PlanSepare" FromRole="DetallePlanSepareXProducto" ToRole="PlanSepare" />
+          <NavigationProperty Name="ProductoXColor" Relationship="Self.FK_DetallePlanSepareXProducto_ProductoXColor" FromRole="DetallePlanSepareXProducto" ToRole="ProductoXColor" />
+        </EntityType>
+        <Association Name="FK_Facturas_Clientes">
+          <End Role="Clientes" Type="SalaBellezaModel.ClientesE" Multiplicity="1" />
+          <End Role="Facturas" Type="SalaBellezaModel.FacturasE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clientes">
+              <PropertyRef Name="ClienteID" />
+            </Principal>
+            <Dependent Role="Facturas">
+              <PropertyRef Name="ClienteID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PlanSepare_Clientes">
+          <End Role="Clientes" Type="SalaBellezaModel.ClientesE" Multiplicity="1" />
+          <End Role="PlanSepare" Type="SalaBellezaModel.PlanSepareE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Clientes">
+              <PropertyRef Name="ClienteID" />
+            </Principal>
+            <Dependent Role="PlanSepare">
+              <PropertyRef Name="ClienteID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductoXColor_Colores">
+          <End Role="Colores" Type="Self.Colores" Multiplicity="1" />
+          <End Role="ProductoXColor" Type="SalaBellezaModel.ProductoXColorE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Colores">
+              <PropertyRef Name="ColorID" />
+            </Principal>
+            <Dependent Role="ProductoXColor">
+              <PropertyRef Name="ColorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DetalleFactura_Facturas">
+          <End Role="Facturas" Type="SalaBellezaModel.FacturasE" Multiplicity="1" />
+          <End Role="DetalleFactura" Type="SalaBellezaModel.DetalleFacturaE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Facturas">
+              <PropertyRef Name="FacturaID" />
+            </Principal>
+            <Dependent Role="DetalleFactura">
+              <PropertyRef Name="FacturaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DetallePlanSepareXProducto_PlanSepare">
+          <End Role="PlanSepare" Type="SalaBellezaModel.PlanSepareE" Multiplicity="1" />
+          <End Role="DetallePlanSepareXProducto" Type="SalaBellezaModel.DetallePlanSepareXProductoE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PlanSepare">
+              <PropertyRef Name="PlanSepareID" />
+            </Principal>
+            <Dependent Role="DetallePlanSepareXProducto">
+              <PropertyRef Name="PlanSepareID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DetalleFactura_Productos">
+          <End Role="Productos" Type="SalaBellezaModel.ProductosE" Multiplicity="1" />
+          <End Role="DetalleFactura" Type="SalaBellezaModel.DetalleFacturaE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Productos">
+              <PropertyRef Name="ProductoID" />
+            </Principal>
+            <Dependent Role="DetalleFactura">
+              <PropertyRef Name="ProductoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ProductoXColor_Productos">
+          <End Role="Productos" Type="SalaBellezaModel.ProductosE" Multiplicity="1" />
+          <End Role="ProductoXColor" Type="SalaBellezaModel.ProductoXColorE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Productos">
+              <PropertyRef Name="ProductoID" />
+            </Principal>
+            <Dependent Role="ProductoXColor">
+              <PropertyRef Name="ProductoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Promociones_Productos">
+          <End Role="Productos" Type="SalaBellezaModel.ProductosE" Multiplicity="1" />
+          <End Role="Promociones" Type="SalaBellezaModel.PromocionesE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Productos">
+              <PropertyRef Name="ProductoID" />
+            </Principal>
+            <Dependent Role="Promociones">
+              <PropertyRef Name="ProductoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DetallePlanSepareXProducto_ProductoXColor">
+          <End Role="ProductoXColor" Type="SalaBellezaModel.ProductoXColorE" Multiplicity="1" />
+          <End Role="DetallePlanSepareXProducto" Type="SalaBellezaModel.DetallePlanSepareXProductoE" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductoXColor">
+              <PropertyRef Name="ProductoXColorID" />
+            </Principal>
+            <Dependent Role="DetallePlanSepareXProducto">
+              <PropertyRef Name="ProductoXColorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SalaBellezaEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Clientes" EntityType="SalaBellezaModel.ClientesE" />
+          <EntitySet Name="Colores" EntityType="Self.Colores" />
+          <EntitySet Name="Facturas" EntityType="SalaBellezaModel.FacturasE" />
+          <EntitySet Name="PlanSepare" EntityType="SalaBellezaModel.PlanSepareE" />
+          <EntitySet Name="Productos" EntityType="SalaBellezaModel.ProductosE" />
+          <EntitySet Name="ProductoXColor" EntityType="SalaBellezaModel.ProductoXColorE" />
+          <EntitySet Name="Promociones" EntityType="SalaBellezaModel.PromocionesE" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+          <EntitySet Name="DetalleFactura" EntityType="SalaBellezaModel.DetalleFacturaE" />
+          <EntitySet Name="DetallePlanSepareXProducto" EntityType="SalaBellezaModel.DetallePlanSepareXProductoE" />
+          <AssociationSet Name="FK_Facturas_Clientes" Association="Self.FK_Facturas_Clientes">
+            <End Role="Clientes" EntitySet="Clientes" />
+            <End Role="Facturas" EntitySet="Facturas" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PlanSepare_Clientes" Association="Self.FK_PlanSepare_Clientes">
+            <End Role="Clientes" EntitySet="Clientes" />
+            <End Role="PlanSepare" EntitySet="PlanSepare" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductoXColor_Colores" Association="Self.FK_ProductoXColor_Colores">
+            <End Role="Colores" EntitySet="Colores" />
+            <End Role="ProductoXColor" EntitySet="ProductoXColor" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DetalleFactura_Facturas" Association="Self.FK_DetalleFactura_Facturas">
+            <End Role="Facturas" EntitySet="Facturas" />
+            <End Role="DetalleFactura" EntitySet="DetalleFactura" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DetallePlanSepareXProducto_PlanSepare" Association="Self.FK_DetallePlanSepareXProducto_PlanSepare">
+            <End Role="PlanSepare" EntitySet="PlanSepare" />
+            <End Role="DetallePlanSepareXProducto" EntitySet="DetallePlanSepareXProducto" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DetalleFactura_Productos" Association="Self.FK_DetalleFactura_Productos">
+            <End Role="Productos" EntitySet="Productos" />
+            <End Role="DetalleFactura" EntitySet="DetalleFactura" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductoXColor_Productos" Association="Self.FK_ProductoXColor_Productos">
+            <End Role="Productos" EntitySet="Productos" />
+            <End Role="ProductoXColor" EntitySet="ProductoXColor" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Promociones_Productos" Association="Self.FK_Promociones_Productos">
+            <End Role="Productos" EntitySet="Productos" />
+            <End Role="Promociones" EntitySet="Promociones" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DetallePlanSepareXProducto_ProductoXColor" Association="Self.FK_DetallePlanSepareXProducto_ProductoXColor">
+            <End Role="ProductoXColor" EntitySet="ProductoXColor" />
+            <End Role="DetallePlanSepareXProducto" EntitySet="DetallePlanSepareXProducto" />
+          </AssociationSet>
+          <FunctionImport Name="InsertarCliente" ReturnType="Collection(Int32)">
+            <Parameter Name="Nombre" Mode="In" Type="String" />
+            <Parameter Name="Cedula" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="SeleccionarPlanSepare" ReturnType="Collection(SalaBellezaModel.SeleccionarPlanSepare_Result)">
+            <Parameter Name="Cedula" Mode="In" Type="Int32" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="SeleccionarPlanSepare_Result">
+          <Property Type="Int32" Name="ClienteID" Nullable="false" />
+          <Property Type="DateTime" Name="FechaSepare" Nullable="false" Precision="23" />
+          <Property Type="Decimal" Name="TotalPrecioSepare" Nullable="false" Precision="19" />
+          <Property Type="Decimal" Name="ValorMinimo" Nullable="false" Precision="19" />
+          <Property Type="Int32" Name="PlanSepareID" Nullable="false" />
+          <Property Type="Int32" Name="Cantidad" Nullable="false" />
+          <Property Type="Int32" Name="CantidadStock" Nullable="false" />
+          <Property Type="Decimal" Name="PrecioUnidad" Nullable="false" Precision="19" />
+          <Property Type="String" Name="Referencia" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="ProductoXColorID" Nullable="false" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="SalaBellezaModelStoreContainer" CdmEntityContainer="SalaBellezaEntities">
+          <EntitySetMapping Name="Clientes">
+            <EntityTypeMapping TypeName="SalaBellezaModel.ClientesE">
+              <MappingFragment StoreEntitySet="Clientes">
+                <ScalarProperty Name="ClienteID" ColumnName="ClienteID" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Identificacion" ColumnName="Identificacion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Colores">
+            <EntityTypeMapping TypeName="SalaBellezaModel.Colores">
+              <MappingFragment StoreEntitySet="Colores">
+                <ScalarProperty Name="ColorID" ColumnName="ColorID" />
+                <ScalarProperty Name="Color" ColumnName="Color" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Facturas">
+            <EntityTypeMapping TypeName="SalaBellezaModel.FacturasE">
+              <MappingFragment StoreEntitySet="Facturas">
+                <ScalarProperty Name="FacturaID" ColumnName="FacturaID" />
+                <ScalarProperty Name="ClienteID" ColumnName="ClienteID" />
+                <ScalarProperty Name="Fecha" ColumnName="Fecha" />
+                <ScalarProperty Name="Total" ColumnName="Total" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PlanSepare">
+            <EntityTypeMapping TypeName="SalaBellezaModel.PlanSepareE">
+              <MappingFragment StoreEntitySet="PlanSepare">
+                <ScalarProperty Name="PlanSepareID" ColumnName="PlanSepareID" />
+                <ScalarProperty Name="ClienteID" ColumnName="ClienteID" />
+                <ScalarProperty Name="FechaSepare" ColumnName="FechaSepare" />
+                <ScalarProperty Name="TotalPrecioSepare" ColumnName="TotalPrecioSepare" />
+                <ScalarProperty Name="ValorMinimo" ColumnName="ValorMinimo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Productos">
+            <EntityTypeMapping TypeName="SalaBellezaModel.ProductosE">
+              <MappingFragment StoreEntitySet="Productos">
+                <ScalarProperty Name="ProductoID" ColumnName="ProductoID" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductoXColor">
+            <EntityTypeMapping TypeName="SalaBellezaModel.ProductoXColorE">
+              <MappingFragment StoreEntitySet="ProductoXColor">
+                <ScalarProperty Name="ProductoXColorID" ColumnName="ProductoXColorID" />
+                <ScalarProperty Name="ProductoID" ColumnName="ProductoID" />
+                <ScalarProperty Name="ColorID" ColumnName="ColorID" />
+                <ScalarProperty Name="CantidadStock" ColumnName="CantidadStock" />
+                <ScalarProperty Name="PrecioUnidad" ColumnName="PrecioUnidad" />
+                <ScalarProperty Name="Referencia" ColumnName="Referencia" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Promociones">
+            <EntityTypeMapping TypeName="SalaBellezaModel.PromocionesE">
+              <MappingFragment StoreEntitySet="Promociones">
+                <ScalarProperty Name="PromocionID" ColumnName="PromocionID" />
+                <ScalarProperty Name="ProductoID" ColumnName="ProductoID" />
+                <ScalarProperty Name="PorcentajeDescuento" ColumnName="PorcentajeDescuento" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="SalaBellezaModel.sysdiagrams">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DetalleFactura">
+            <EntityTypeMapping TypeName="SalaBellezaModel.DetalleFacturaE">
+              <MappingFragment StoreEntitySet="DetalleFactura">
+                <ScalarProperty Name="FacturaID" ColumnName="FacturaID" />
+                <ScalarProperty Name="ProductoID" ColumnName="ProductoID" />
+                <ScalarProperty Name="Cantidad" ColumnName="Cantidad" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DetallePlanSepareXProducto">
+            <EntityTypeMapping TypeName="SalaBellezaModel.DetallePlanSepareXProductoE">
+              <MappingFragment StoreEntitySet="DetallePlanSepareXProducto">
+                <ScalarProperty Name="PlanSepareID" ColumnName="PlanSepareID" />
+                <ScalarProperty Name="ProductoXColorID" ColumnName="ProductoXColorID" />
+                <ScalarProperty Name="Cantidad" ColumnName="Cantidad" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="InsertarCliente" FunctionName="SalaBellezaModel.Store.InsertarCliente" />
+          <FunctionImportMapping FunctionImportName="SeleccionarPlanSepare" FunctionName="SalaBellezaModel.Store.SeleccionarPlanSepare">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="SalaBellezaModel.SeleccionarPlanSepare_Result">
+                <ScalarProperty Name="ClienteID" ColumnName="ClienteID" />
+                <ScalarProperty Name="FechaSepare" ColumnName="FechaSepare" />
+                <ScalarProperty Name="TotalPrecioSepare" ColumnName="TotalPrecioSepare" />
+                <ScalarProperty Name="ValorMinimo" ColumnName="ValorMinimo" />
+                <ScalarProperty Name="PlanSepareID" ColumnName="PlanSepareID" />
+                <ScalarProperty Name="Cantidad" ColumnName="Cantidad" />
+                <ScalarProperty Name="CantidadStock" ColumnName="CantidadStock" />
+                <ScalarProperty Name="PrecioUnidad" ColumnName="PrecioUnidad" />
+                <ScalarProperty Name="Referencia" ColumnName="Referencia" />
+                <ScalarProperty Name="ProductoXColorID" ColumnName="ProductoXColorID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
